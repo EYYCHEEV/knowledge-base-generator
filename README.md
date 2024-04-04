@@ -19,11 +19,17 @@ This script is designed to consolidate various code and documentation files into
 
 1. **Set Up Your Environment**: Ensure Python 3.6 or later is installed on your system.
 2. **Run the Script**:
-   ```
-   python knowledge_base_gen.py <repo_path> -o <output_directory>
-   ```
-   - `<repo_path>`: Path to the Git repository where the script will be executed.
-   - `<output_directory>`: Path where the output files will be saved. If `-o` is not specified, the current directory will be used.
+   - To specify custom paths:
+     ```
+     python knowledge_base_gen.py <repo_path> -o <output_directory>
+     ```
+     - `<repo_path>`: Path to the Git repository where the script will be executed.
+     - `<output_directory>`: Path where the output files will be saved. If `-o` is not specified, the current directory will be used.
+   - To use the script's location as both the source and output directory, simply run without any arguments:
+     ```
+     python knowledge_base_gen.py
+     ```
+     If no arguments are provided, the script will use the script file's location for both the repository path and the output directory.
 
 ## Arguments
 
