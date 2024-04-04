@@ -2,6 +2,7 @@ import argparse
 import glob
 import os
 
+
 def find_files(start_path, file_types):
     """Recursively find all files of specified types in the given directory."""
     files = []
@@ -10,6 +11,7 @@ def find_files(start_path, file_types):
             glob.glob(os.path.join(start_path, "**", f"*.{file_type}"), recursive=True)
         )
     return files
+
 
 def combine_files_with_chunking(
     file_paths, output_file_base, output_dir, max_chars=1_200_000
@@ -24,6 +26,9 @@ def combine_files_with_chunking(
 
     with open(output_file, "w", encoding="utf-8") as outfile:
         for file_path in file_paths:
+            if os.path.basename(file_path) == "knowledge_base_gen.py":
+                continue  # Skip the script itself
+
             try:
                 with open(file_path, "r", encoding="utf-8") as infile:
                     file_extension = file_path.split(".")[-1]
@@ -54,25 +59,37 @@ def combine_files_with_chunking(
 
     print(f"Files have been combined and chunked. {file_count} files processed.")
 
+
 def parse_arguments():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
         description="Combine files into a markdown-based knowledge base."
     )
     parser.add_argument(
-        "repo_path",
+        "-r",
+        "--repo_path",
         type=str,
-        help="Path to the Git repository where the script will be executed"
+        default=".",
+        help="Path to the Git repository where the script will be executed. Defaults to the script's current directory.",
     )
-    parser.add_argument("-o", "--output", help="Output directory path", default=".")
+    parser.add_argument(
+        "-o",
+        "--output",
+        help="Output directory path. Defaults to the script's current directory.",
+        default=".",
+    )
     return parser.parse_args()
+
 
 if __name__ == "__main__":
     args = parse_arguments()
-    repo_path = args.repo_path  # Use the provided repo_path from arguments
+
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    repo_path = script_dir if args.repo_path == "." else args.repo_path
+    output_dir = script_dir if args.output == "." else args.output
+
     working_dir_name = os.path.basename(os.path.normpath(repo_path))
     output_file_base = f"{working_dir_name}-knowledge-base"
-    output_dir = args.output
 
     file_types = [
         "txt",
